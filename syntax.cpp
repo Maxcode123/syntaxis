@@ -44,6 +44,7 @@ public:
     void push(Token t);
     bool empty();
     void show();
+    void clear();
     Stack() // Constructor. Creates a stack and puts the bottom token in.
     {
         bottom = Token();
@@ -102,6 +103,12 @@ void Stack::show()
     cout << ' ';
 }
 
+void Stack::clear()
+{
+    head = &bottom_node;
+    top = bottom;
+}
+
 Stack t_stack;
 
 
@@ -110,7 +117,7 @@ class Stream_parser
 {
 public: 
     void parse_stream();
-    string get_stream();
+    void clear_stream();
     string stream {""};
 };
 
@@ -124,6 +131,11 @@ void Stream_parser::parse_stream()
         stream.push_back(ch);
         cin >> ch;
     }
+}
+
+void Stream_parser::clear_stream()
+{
+    stream = "";
 }
 
 
@@ -211,7 +223,6 @@ void read(string stream)
     char ch;
     Token t;
 
-
     cout << "Stack  State   Remaining stream\n";
     for (int i = 0; i < stream.length(); i++)
     {
@@ -233,11 +244,18 @@ Stream_parser parser;
 
 int main()
 {
-    cout << prompt << ' ';
-    parser.parse_stream();
+    while (cin)
+    {
+        cout << prompt << ' ';
+        parser.parse_stream();
 
-    read(parser.stream);
+        read(parser.stream);
 
-    if (state == final) cout << "YES\n";
-    else cout << "NO\n";
+        if (state == final) cout << "YES\n";
+        else cout << "NO\n";
+
+        state = initial;
+        t_stack.clear();
+        parser.clear_stream();
+    }
 }
