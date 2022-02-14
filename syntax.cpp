@@ -6,6 +6,7 @@ const char lft = 'M'; // Left (opening) token character.
 const char rgt = 'N'; // Right (closing) token character.
 const char trm = ';'; // Sentence-terminating token character.
 const char btm = '$'; // Stack-bottom token character.
+const char quit = 'q'; // Quit program character.
 const int lft_id = -1; // Opening token id. 
 const int rgt_id = 1; // Closing token id.
 const int trm_id = 0; // Terminating token id.
@@ -155,12 +156,15 @@ Token tokenize(char ch)
 
 /* Implements the transition function:
 p(k1, $, lft) = {k2, $}
+p(k1, $, rgt) = {k4, $}
 p(k2, $, lft) = {k2, $lft}
 p(k2, $, rgt) = {k3, $}
 p(k2, lft, lft) = {k2, lftlft}
 p(k2, $lft, rgt) = {k2, $}
 p(k3, $, lft) = {k2, $}
 p(k3, $, rgt) = {k4, $}
+p(k4, $, lft) = {k4, $}
+p(k4, $, rgt) = {k4, $}
 */
 void transition(Token next_token)
 {
@@ -174,7 +178,8 @@ void transition(Token next_token)
         }
         else
         {
-            error("Cannot start with token N.\n");
+            state = failed;
+            return;
         }
     case intermediate:
         if (next_token.value == lft)
@@ -248,6 +253,7 @@ int main()
     {
         cout << prompt << ' ';
         parser.parse_stream();
+        if (parser.stream[0] == quit) return 0;
 
         read(parser.stream);
 
