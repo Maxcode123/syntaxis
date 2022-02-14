@@ -244,11 +244,20 @@ void read(string stream)
 } 
 
 
+void welcome_message()
+{
+    cout << "Syntax analyzer\nValid tokens: '" << lft << "', '" << rgt << "'";
+    cout << "\nSentence-terminating character: ';'";
+    cout << "\nQuit: 'q;'\n";
+}
+
 const char prompt = '>';
 Stream_parser parser;
 
 int main()
 {
+    welcome_message();
+
     while (cin)
     {
         cout << prompt << ' ';
