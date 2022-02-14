@@ -1,6 +1,6 @@
 #include "std_lib_facilities.h"
 
-enum State {initial = 1, intermediate = 2, final = 3};
+enum State {initial = 1, intermediate = 2, final = 3, failed = 4};
 
 const char lft = 'M'; // Left (opening) token character.
 const char rgt = 'N'; // Right (closing) token character.
@@ -148,6 +148,7 @@ p(k2, $, rgt) = {k3, $}
 p(k2, lft, lft) = {k2, lftlft}
 p(k2, $lft, rgt) = {k2, $}
 p(k3, $, lft) = {k2, $}
+p(k3, $, rgt) = {k4, $}
 */
 void transition(Token next_token)
 {
@@ -188,6 +189,13 @@ void transition(Token next_token)
             state = intermediate;
             return;
         }
+        if (next_token.value == rgt)
+        {
+            state = failed;
+            return;
+        }
+    case failed:
+        return;
     default:
         break;
     }
@@ -203,10 +211,12 @@ void read(string stream)
     char ch;
     Token t;
 
+
+    cout << "Stack  State   Remaining stream\n";
     for (int i = 0; i < stream.length(); i++)
     {
         t_stack.show();
-        cout << ' ' << state << ' ';
+        cout << "     " << state << "       ";
         cout << stream.substr(i) << ' ';
         ch = stream[i];
         t = tokenize(ch);
@@ -214,7 +224,7 @@ void read(string stream)
         cout << '\n';
     }
     t_stack.show();
-    cout << ' ' << state << '\n';
+    cout << "     " << state << '\n';
 } 
 
 
