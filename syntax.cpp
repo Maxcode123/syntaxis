@@ -172,29 +172,35 @@ void transition(Token next_token)
     {
     case initial:
         if (next_token.value == lft)
+        // p(k1, $, lft) = {k2, $}
         {
             state = intermediate;
             return;
         }
         else
+        // p(k1, $, rgt) = {k4, $}
         {
             state = failed;
             return;
         }
     case intermediate:
         if (next_token.value == lft)
+        // p(k2, $, lft) = {k2, $lft}
+        // p(k2, lft, lft) = {k2, lftlft}
         {
             t_stack.push(next_token);
             return;
         }
-        else 
+        else
         {
             if (t_stack.empty())
+            // p(k2, $, rgt) = {k3, $}
             {
                 state = final;
                 return;
             }
             else
+            // p(k2, $lft, rgt) = {k2, $}
             {
                 t_stack.pop();
                 return;
@@ -202,16 +208,20 @@ void transition(Token next_token)
         }
     case final:
         if (next_token.value == lft)
+        // p(k3, $, lft) = {k2, $}
         {
             state = intermediate;
             return;
         }
-        if (next_token.value == rgt)
+        else
+        // p(k3, $, rgt) = {k4, $}
         {
             state = failed;
             return;
         }
     case failed:
+    // p(k4, $, lft) = {k4, $}
+    // p(k4, $, rgt) = {k4, $}
         return;
     default:
         break;
